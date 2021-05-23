@@ -110,7 +110,8 @@ print('Average temperature (F) for the whole dataset:', round(avg_temp, 2))
 avg_temp_1969 = None
 
 # YOUR CODE HERE 8
-avg_temp_1969 = 
+avg_temp_1969 = data.query('19690501<=DATE<=19690831')['TMAX'].mean()
+
 #CAUTION!!! DON'T EDIT THIS PART START
 # This test print should print a number
 print('Average temperature (F) for the Summer of 69:', round(avg_temp_1969, 2))
@@ -123,7 +124,18 @@ print('Average temperature (F) for the Summer of 69:', round(avg_temp_1969, 2))
 monthly_data = None
 
 # YOUR CODE HERE 9
+def fahr_to_celsius(temp_fahrenheit):
+  converted_temp = (temp_fahrenheit-32)/1.8
+  return converted_temp
 
+data['TAVG_C']= data['TAVG'].apply(fahr_to_celsius)
+data['DATE_STR']= data['DATE'].astype(str)
+data['YEAR_MONTH'] = data['DATE_STR'].str.slice(start=0,
+stop=6)
+
+grouped = data.groupby([ 'YEAR_MONTH'])
+monthly_data = pd.DataFrame(columns=['temp_celsius'])
+monthly_data['temp_celsius'] = grouped['TAVG_C'].mean()
 #CAUTION!!! DON'T EDIT THIS PART START
 # This test print should print the length of variable monthly_data
 print(len(monthly_data))
